@@ -109,11 +109,14 @@ interval = 0.1
 
 fg = gr.flowgraph()
 src = analog.sig_source_f(samp_rate, analog.waveform_type.cos, 12, 1.0)
+src2 = analog.sig_source_f(samp_rate, analog.waveform_type.cos, 15, 1.0)
 throttle = streamops.throttle(samp_rate)
 inj = bench.time_tag_injector(gr.sizeof_float, interval, samp_rate)
 # snk = pg_plot_widget_f(100000, 'hello world')
-snk = pg_time_sink_f('hello world', 100000)
+snk = pg_time_sink_f('hello world', 100000, 2)
+# snk2 = pg_time_sink_f('hello world 2', 100000)
 fg.connect((src,throttle, inj, snk))
+fg.connect(src2,0, snk,1)
 
 d1 = Dock('a')
 d2 = Dock('b')
@@ -122,6 +125,7 @@ area.addDock(d1,'top')
 # area.addDock(d2,'top',d1)
 # area.addDock(d3,'top')
 d1.addWidget(snk.widget())
+# d2.addWidget(snk2.widget())
 
 ## first dock gets save/restore buttons
 # w1 = pg.LayoutWidget()
