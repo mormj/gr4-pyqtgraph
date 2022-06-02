@@ -1,0 +1,44 @@
+module: pyqtgraph
+block: pg_time_sink
+label: PyQT Graph Time Sink
+blocktype: sync_block
+
+typekeys:
+  - id: T
+    type: class
+    options: 
+        - cf32
+        - rf32
+
+# Example Parameters
+parameters:
+-   id: title
+    label: Title
+    dtype: std::string
+    settable: true
+-   id: size
+    label: Size
+    dtype: size_t
+    settable: false
+    doc: Number of input ports
+-   id: nports
+    label: Num Ports
+    dtype: size_t
+    settable: false
+    default: 1
+
+# Example Ports
+ports:
+-   domain: stream
+    id: in
+    direction: input
+    type: typekeys/T
+    multiplicity: parameters/nports
+
+
+implementations:
+-   id: numpy
+    lang: python
+
+
+file_format: 1
