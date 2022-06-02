@@ -68,23 +68,6 @@ class pg_plot_widget_f(gr.sync_block):
         for remove_tag in to_remove:
             self._tag_buffer.remove(remove_tag)
 
-            
-
-
-
-        # # Prune the old tags
-
-        # self.curvePoint = pg.CurvePoint(self._curve)
-        # self._widget.addItem(self.curvePoint)
-        # text2 = pg.TextItem("test", anchor=(0.5, -1.0))
-        # text2.setParentItem(self.curvePoint)
-        # arrow2 = pg.ArrowItem(angle=90)
-        # arrow2.setParentItem(self.curvePoint)
-
-        # index = 100
-        # self.curvePoint.setPos(float(index)/(len(self._buffer)-1))
-        # text2.setText(f'{self._buffer[index]:0.1f}')
-
     def widget(self):
         return self._widget
 
