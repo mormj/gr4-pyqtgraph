@@ -11,6 +11,7 @@ import pmtf
 from gnuradio.pyqtgraph.numpy import *
 
 app = pg.mkQApp('DockArea Example')
+pg.setConfigOptions(antialias=True)
 win = QtGui.QMainWindow()
 area = DockArea()
 win.setCentralWidget(area)
