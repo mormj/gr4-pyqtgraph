@@ -1,0 +1,26 @@
+module: pyqtgraph
+block: pg_table
+label: PyQT Graph Table
+blocktype: sync_block
+grc:
+    templates:
+        imports:
+            from gnuradio.pyqtgraph.numpy import pg_table
+        make: |-
+            self.${id} = pg_table()
+            self.docks.append(Dock('${id}'))
+            self.area.addDock(self.docks[-1],'top')
+            self.docks[-1].addWidget(self.${id}.widget())
+
+# Example Ports
+ports:
+-   domain: message
+    id: in
+    direction: input
+
+implementations:
+-   id: numpy
+    lang: python
+    domain: cpu
+
+file_format: 1

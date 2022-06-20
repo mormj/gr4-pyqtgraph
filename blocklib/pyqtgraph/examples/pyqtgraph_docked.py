@@ -36,16 +36,20 @@ fg.connect((src,throttle, inj, snk))
 fg.connect(src2,0, snk,1)
 fg.connect((src3,throttle2, snk2))
 
+pgt = pg_table()
+
 d1 = Dock('a')
 d2 = Dock('b')
-# d3 = Dock('c')
+d3 = Dock('c')
+
 area.addDock(d1,'top')
 area.addDock(d2,'top',d1)
+area.addDock(d3,'right',d1)
 # area.addDock(d3,'top')
 d1.addWidget(snk.widget())
 d2.addWidget(snk2.widget())
 # d2.addWidget(snk2.widget())
-
+d3.addWidget(pgt.widget())
 
 
 
