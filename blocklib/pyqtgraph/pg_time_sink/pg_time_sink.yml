@@ -2,6 +2,15 @@ module: pyqtgraph
 block: pg_time_sink
 label: PyQT Graph Time Sink
 blocktype: sync_block
+grc:
+    templates:
+        imports:
+            from gnuradio.pyqtgraph.numpy import *
+        make: |-
+            self.${id} = pg_time_sink_${T.fcn}(${title}, ${size}, ${nports})
+            self.docks.append(Dock('${id}'))
+            self.area.addDock(self.docks[-1],'top')
+            self.docks[-1].addWidget(self.${id}.widget())
 
 typekeys:
   - id: T
@@ -16,11 +25,14 @@ parameters:
     label: Title
     dtype: std::string
     settable: true
+    grc:
+        default: ""
 -   id: size
-    label: Size
+    label: Number of Points
     dtype: size_t
     settable: false
-    doc: Number of input ports
+    grc:
+        default: 1024
 -   id: nports
     label: Num Ports
     dtype: size_t
@@ -39,6 +51,6 @@ ports:
 implementations:
 -   id: numpy
     lang: python
-
+    domain: cpu
 
 file_format: 1
