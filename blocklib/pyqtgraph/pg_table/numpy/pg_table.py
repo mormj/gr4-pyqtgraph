@@ -39,9 +39,9 @@ class pg_table(grpg.pg_table):
         x = pmtf.map(msg)
 
         if not self.data:
-            self._widget.setHorizontalHeaderLabels(x.keys())
-            self._widget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("asdf"))
-            self._widget.horizontalHeader().setVisible(True)
+            # self._widget.setHorizontalHeaderLabels(x.keys())
+            # self._widget.setHorizontalHeaderItem(0, QtGui.QTableWidgetItem("asdf"))
+            # self._widget.horizontalHeader().setVisible(True)
             # self.data = [x.keys(),]
             self.data = []
 
