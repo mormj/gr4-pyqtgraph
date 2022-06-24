@@ -1,0 +1,56 @@
+module: pyqtgraph
+block: pg_waterfall_sink
+label: PyQT Graph Time Sink
+blocktype: sync_block
+grc:
+    templates:
+        imports:
+            from gnuradio.pyqtgraph.numpy import *
+        make: |-
+            self.${id} = pg_waterfall_sink_${T.fcn}(${title}, ${size}, ${nports})
+            self.docks.append(Dock('${id}'))
+            self.area.addDock(self.docks[-1],'top')
+            self.docks[-1].addWidget(self.${id}.widget())
+
+typekeys:
+  - id: T
+    type: class
+    options: 
+        - cf32
+        - rf32
+
+# Example Parameters
+parameters:
+-   id: title
+    label: Title
+    dtype: std::string
+    settable: true
+    grc:
+        default: ""
+-   id: size
+    label: Number of Points
+    dtype: size_t
+    settable: false
+    grc:
+        default: 1024
+-   id: nports
+    label: Num Ports
+    dtype: size_t
+    settable: false
+    default: 1
+
+# Example Ports
+ports:
+-   domain: stream
+    id: in
+    direction: input
+    type: typekeys/T
+    multiplicity: parameters/nports
+
+
+implementations:
+-   id: numpy
+    lang: python
+    domain: cpu
+
+file_format: 1
