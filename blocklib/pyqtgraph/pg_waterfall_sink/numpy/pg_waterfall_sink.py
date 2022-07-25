@@ -77,12 +77,12 @@ class pg_waterfall_sink_c(grpg.pg_waterfall_sink_c, pg_waterfall_sink_base):
         
         self._buffer = np.zeros((self.nplot,),dtype=np.complex64)
 
-    def work(self, inputs, outputs):
+    def work(self, wio):
         p = 0
-        input = inputs[0]
+        input = wio.inputs()[0]
         # because this is a sync block, each input should have the same n_items
         nin = input.n_items
-        inbuf = gr.get_input_array(self, inputs, p)
+        inbuf = gr.get_input_array(self, wio, p)
         if (len(self._buffer) > nin):
             self._buffer = np.hstack((self._buffer[nin:], inbuf))
         else:

@@ -1,6 +1,6 @@
 module: pyqtgraph
 block: pg_waterfall_sink
-label: PyQT Graph Time Sink
+label: PyQT Graph Waterfall Sink
 blocktype: sync_block
 grc:
     templates:

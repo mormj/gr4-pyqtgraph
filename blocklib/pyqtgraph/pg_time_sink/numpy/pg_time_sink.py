@@ -13,7 +13,7 @@ class pg_time_sink_base:
 
         self.nports = kwargs.get('nports', 1)
         self.iscomplex = kwargs['iscomplex']
-        self._widget = pg.PlotWidget(title=title)
+        self._widget = pg.PlotWidget(title=title, background='w')
 
         self._nplot = nplot 
         self._nbuffers = 2*self.nports if self.iscomplex else self.nports
@@ -95,11 +95,11 @@ class pg_time_sink_f(grpg.pg_time_sink_f, pg_time_sink_base):
         self.set_pyblock_detail(gr.pyblock_detail(self))       
         
 
-    def work(self, inputs, outputs):
-        for p, input in enumerate(inputs):
+    def work(self, wio):
+        for p, input in enumerate(wio.inputs()):
+
             # because this is a sync block, each input should have the same n_items
             nin = input.n_items
-
             nr = input.nitems_read()
             tags = input.tags_in_window(0,nin)
             # each tag should be associated with an index in the buffer
@@ -110,7 +110,7 @@ class pg_time_sink_f(grpg.pg_time_sink_f, pg_time_sink_base):
             self._n_buf_end = nr+nin
             self._n_buf_start = nr-(len(self._buffers[p])-nin)
 
-            inbuf = gr.get_input_array(self, inputs, p)
+            inbuf = gr.get_input_array(self, wio, p)
             if (len(self._buffers[p]) > nin):
                 self._buffers[p] = np.hstack((self._buffers[p][nin:], inbuf))
             else:
@@ -132,8 +132,8 @@ class pg_time_sink_c(grpg.pg_time_sink_c, pg_time_sink_base):
         self.set_pyblock_detail(gr.pyblock_detail(self))       
         
 
-    def work(self, inputs, outputs):
-        for p, input in enumerate(inputs):
+    def work(self, wio):
+        for p, input in enumerate(wio.inputs()):
             # because this is a sync block, each input should have the same n_items
             nin = input.n_items
 
@@ -147,7 +147,7 @@ class pg_time_sink_c(grpg.pg_time_sink_c, pg_time_sink_base):
             self._n_buf_end = nr+nin
             self._n_buf_start = nr-(len(self._buffers[2*p])-nin)
 
-            inbuf = gr.get_input_array(self, inputs, p)
+            inbuf = gr.get_input_array(self, wio, p)
             if (len(self._buffers[p]) > nin):
                 self._buffers[2*p] = np.hstack((self._buffers[p][nin:], np.real(inbuf)))
                 self._buffers[2*p+1] = np.hstack((self._buffers[p][nin:], np.imag(inbuf)))
