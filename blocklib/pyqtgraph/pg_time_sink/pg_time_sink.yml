@@ -23,19 +23,19 @@ typekeys:
 parameters:
 -   id: title
     label: Title
-    dtype: std::string
+    dtype: string
     settable: true
     grc:
         default: ""
 -   id: size
     label: Number of Points
-    dtype: size_t
+    dtype: size
     settable: false
     grc:
         default: 1024
 -   id: nports
     label: Num Ports
-    dtype: size_t
+    dtype: size
     settable: false
     default: 1
 

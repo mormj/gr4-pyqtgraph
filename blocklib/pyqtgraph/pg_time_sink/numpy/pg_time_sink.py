@@ -119,7 +119,7 @@ class pg_time_sink_f(grpg.pg_time_sink_f, pg_time_sink_base):
 
             input.consume(nin)
         
-        return gr.work_return_t.WORK_OK
+        return gr.work_return_t.OK
 
 
 class pg_time_sink_c(grpg.pg_time_sink_c, pg_time_sink_base):
@@ -158,4 +158,4 @@ class pg_time_sink_c(grpg.pg_time_sink_c, pg_time_sink_base):
 
             input.consume(nin)
         
-        return gr.work_return_t.WORK_OK
+        return gr.work_return_t.OK

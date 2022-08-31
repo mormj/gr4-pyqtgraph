@@ -22,14 +22,14 @@ samp_rate = 32000
 interval = 0.1
 
 fg = gr.flowgraph()
-src = analog.sig_source_f(samp_rate, analog.waveform_t.cos, 12, 1.0)
-src2 = analog.sig_source_f(samp_rate, analog.waveform_t.cos, 15, 1.0)
+src = analog.sig_source_f(samp_rate, analog.waveform_t.COS, 12, 1.0)
+src2 = analog.sig_source_f(samp_rate, analog.waveform_t.COS, 15, 1.0)
 throttle = streamops.throttle(samp_rate)
 inj = bench.time_tag_injector(gr.sizeof_float, interval, samp_rate)
 # snk = pg_plot_widget_f(100000, 'hello world')
 snk = pg_time_sink_f('hello world', 100000, nports=2)
 
-src3 = analog.sig_source_c(samp_rate, analog.waveform_t.cos, 0, 0.5)
+src3 = analog.sig_source_c(samp_rate, analog.waveform_t.COS, 0, 0.5)
 throttle2 = streamops.throttle(samp_rate)
 snk2 = pg_time_sink_c('hello world 2', 100000)
 snk3 = pg_waterfall_sink_c('hello world 3', 1024*100)

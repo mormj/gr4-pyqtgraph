@@ -23,7 +23,7 @@ typekeys:
 parameters:
 -   id: title
     label: Title
-    dtype: std::string
+    dtype: string
     settable: true
     grc:
         default: ""

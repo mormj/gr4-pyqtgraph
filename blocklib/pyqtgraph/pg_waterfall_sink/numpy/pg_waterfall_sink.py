@@ -90,4 +90,4 @@ class pg_waterfall_sink_c(grpg.pg_waterfall_sink_c, pg_waterfall_sink_base):
             self._buffer = inbuf[n:nin]
 
         input.consume(nin)
-        return gr.work_return_t.WORK_OK
+        return gr.work_return_t.OK
