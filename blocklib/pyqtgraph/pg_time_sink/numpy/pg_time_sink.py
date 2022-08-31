@@ -5,11 +5,13 @@ import numpy as np
 import pyqtgraph as pg
 
 class pg_time_sink_base:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, blk, **kwargs):
+
+        self._blk = blk
         self.colors = ['blue','red','green','magenta','cyan','yellow','white','gray','darkCyan','darkMagenta','darkYellow','darkGray']
         
-        title = args[0]
-        nplot = args[1]
+        title = kwargs['title']
+        nplot = kwargs['size']
 
         self.nports = kwargs.get('nports', 1)
         self.iscomplex = kwargs['iscomplex']
@@ -83,16 +85,14 @@ class pg_time_sink_base:
     def widget(self):
         return self._widget
 
-class pg_time_sink_f(grpg.pg_time_sink_f, pg_time_sink_base):
-    def __init__(self, *args, **kwargs):
+class pg_time_sink_f(pg_time_sink_base):
+    def __init__(self, blk, **kwargs):
 
         self.iscomplex = False
         addl_kwargs = {'iscomplex': self.iscomplex}
         addl_kwargs.update(kwargs)
 
-        pg_time_sink_base.__init__(self, *args, **addl_kwargs)
-        grpg.pg_time_sink_f.__init__(self, *args, **kwargs, impl = grpg.pg_time_sink_f.available_impl.pyshell)
-        self.set_pyblock_detail(gr.pyblock_detail(self))       
+        pg_time_sink_base.__init__(self, blk, **addl_kwargs)  
         
 
     def work(self, wio):
@@ -110,7 +110,7 @@ class pg_time_sink_f(grpg.pg_time_sink_f, pg_time_sink_base):
             self._n_buf_end = nr+nin
             self._n_buf_start = nr-(len(self._buffers[p])-nin)
 
-            inbuf = gr.get_input_array(self, wio, p)
+            inbuf = gr.get_input_array(self._blk, wio, p)
             if (len(self._buffers[p]) > nin):
                 self._buffers[p] = np.hstack((self._buffers[p][nin:], inbuf))
             else:
@@ -122,14 +122,12 @@ class pg_time_sink_f(grpg.pg_time_sink_f, pg_time_sink_base):
         return gr.work_return_t.OK
 
 
-class pg_time_sink_c(grpg.pg_time_sink_c, pg_time_sink_base):
-    def __init__(self, *args, **kwargs):
+class pg_time_sink_c( pg_time_sink_base):
+    def __init__(self, blk, **kwargs):
         self.iscomplex = True
         addl_kwargs = {'iscomplex': self.iscomplex}
         addl_kwargs.update(kwargs)
-        pg_time_sink_base.__init__(self, *args, **addl_kwargs)
-        grpg.pg_time_sink_c.__init__(self, *args, **kwargs, impl = grpg.pg_time_sink_c.available_impl.pyshell)
-        self.set_pyblock_detail(gr.pyblock_detail(self))       
+        pg_time_sink_base.__init__(self, blk, **addl_kwargs)
         
 
     def work(self, wio):
@@ -147,7 +145,7 @@ class pg_time_sink_c(grpg.pg_time_sink_c, pg_time_sink_base):
             self._n_buf_end = nr+nin
             self._n_buf_start = nr-(len(self._buffers[2*p])-nin)
 
-            inbuf = gr.get_input_array(self, wio, p)
+            inbuf = gr.get_input_array(self._blk, wio, p)
             if (len(self._buffers[p]) > nin):
                 self._buffers[2*p] = np.hstack((self._buffers[p][nin:], np.real(inbuf)))
                 self._buffers[2*p+1] = np.hstack((self._buffers[p][nin:], np.imag(inbuf)))
