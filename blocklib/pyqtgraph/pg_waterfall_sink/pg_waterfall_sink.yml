@@ -5,12 +5,13 @@ blocktype: sync_block
 grc:
     templates:
         imports:
-            from gnuradio.pyqtgraph.numpy import *
+            from gnuradio import pyqtgraph as grpg
         make: |-
-            self.${id} = pg_waterfall_sink_${T.fcn}(${title}, ${size}, ${nports})
+            self.${id} = grpg.pg_waterfall_sink_${T.fcn}(${title}, ${size}, ${nports}, impl=grpg.pg_waterfall_sink_${T.fcn}.available_impl.numpy)
             self.docks.append(Dock('${id}'))
             self.area.addDock(self.docks[-1],'top')
-            self.docks[-1].addWidget(self.${id}.widget())
+            self._${id}_widget = self.${id}.py_method("widget")
+            self.docks[-1].addWidget(self._${id}_widget)
 
 typekeys:
   - id: T
@@ -29,13 +30,13 @@ parameters:
         default: ""
 -   id: size
     label: Number of Points
-    dtype: size_t
+    dtype: size
     settable: false
     grc:
         default: 1024
 -   id: nports
     label: Num Ports
-    dtype: size_t
+    dtype: size
     settable: false
     default: 1
 

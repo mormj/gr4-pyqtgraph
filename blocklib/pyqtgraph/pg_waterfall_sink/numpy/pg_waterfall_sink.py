@@ -6,16 +6,17 @@ import pyqtgraph as pg
 from pyqtgraph.graphicsItems.GradientEditorItem import Gradients
 
 class pg_waterfall_sink_base:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, blk, **kwargs):
+        self._blk = blk
         self.colors = ['blue','red','green','magenta','cyan','yellow','white','gray','darkCyan','darkMagenta','darkYellow','darkGray']
         
-        title = args[0]
-        self.nplot = args[1]
+        title = kwargs['title']
+        self.nplot = kwargs['size']
 
         self.nports = kwargs.get('nports', 1)
         self.iscomplex = kwargs['iscomplex']
         self._widget = pg.GraphicsLayoutWidget()
-        self._plot = self._widget.addPlot(title="Waterfall", row=0, col=0)
+        self._plot = self._widget.addPlot(title=title, row=0, col=0)
         # self._lut = pg.HistogramLUTItem(orientation="horizontal") #, levelMode='rgba')
         self._waterfall_img = None
         self._x = [0.0, 1.0]
@@ -54,10 +55,11 @@ class pg_waterfall_sink_base:
 
         # print(self._buffer)
         spec = stft(self._buffer)
+        
         # print(spec)
         self._waterfall_img.setLookupTable(self._lut)
         # self._waterfall_img.scale((self._x[-1] - self._x[0]) / len(self._x), 1)
-        self._waterfall_img.setImage(spec,
+        self._waterfall_img.setImage(spec.transpose(),
                                    autoLevels=False, autoRange=False, levels=(0.0, 1024.0))    
         # h = self._waterfall_img.getHistogram()
         # self._lut.plot.setData(*h)
@@ -66,14 +68,12 @@ class pg_waterfall_sink_base:
         return self._widget
 
 
-class pg_waterfall_sink_c(grpg.pg_waterfall_sink_c, pg_waterfall_sink_base):
-    def __init__(self, *args, **kwargs):
+class pg_waterfall_sink_c(pg_waterfall_sink_base):
+    def __init__(self, blk, **kwargs):
         self.iscomplex = True
         addl_kwargs = {'iscomplex': self.iscomplex}
         addl_kwargs.update(kwargs)
-        pg_waterfall_sink_base.__init__(self, *args, **addl_kwargs)
-        grpg.pg_waterfall_sink_c.__init__(self, *args, **kwargs, impl = grpg.pg_waterfall_sink_c.available_impl.pyshell)
-        self.set_pyblock_detail(gr.pyblock_detail(self))       
+        pg_waterfall_sink_base.__init__(self, blk, **addl_kwargs)
         
         self._buffer = np.zeros((self.nplot,),dtype=np.complex64)
 
@@ -82,7 +82,7 @@ class pg_waterfall_sink_c(grpg.pg_waterfall_sink_c, pg_waterfall_sink_base):
         input = wio.inputs()[0]
         # because this is a sync block, each input should have the same n_items
         nin = input.n_items
-        inbuf = gr.get_input_array(self, wio, p)
+        inbuf = gr.get_input_array(self._blk, wio, p)
         if (len(self._buffer) > nin):
             self._buffer = np.hstack((self._buffer[nin:], inbuf))
         else:
