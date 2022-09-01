@@ -7,7 +7,7 @@ grc:
         imports:
             from gnuradio import pyqtgraph as grpg
         make: |-
-            self.${id} = grpg.pg_waterfall_sink_${T.fcn}(${title}, ${size}, ${nports}, impl=grpg.pg_waterfall_sink_${T.fcn}.available_impl.numpy)
+            self.${id} = grpg.pg_waterfall_sink_${T.fcn}(${title}, ${samp_rate}, ${fc}, ${size}, ${nports}, ${nfft}, ${colormap}, impl=grpg.pg_waterfall_sink_${T.fcn}.available_impl.numpy)
             self.docks.append(Dock('${id}'))
             self.area.addDock(self.docks[-1],'top')
             self._${id}_widget = self.${id}.py_method("widget")
@@ -28,6 +28,18 @@ parameters:
     settable: true
     grc:
         default: ""
+-   id: samp_rate
+    label: Sampling Rate
+    dtype: rf64
+    settable: false
+    grc:
+        default: samp_rate
+-   id: fc
+    label: Center Frequency
+    dtype: rf64
+    settable: false
+    grc:
+        default: 0
 -   id: size
     label: Number of Points
     dtype: size
@@ -39,6 +51,18 @@ parameters:
     dtype: size
     settable: false
     default: 1
+
+-   id: nfft
+    label: FFT Size
+    dtype: size
+    settable: false
+    default: 1
+
+-   id: colormap
+    label: Color Map
+    dtype: string
+    settable: false
+    default: '"flame"'
 
 # Example Ports
 ports:
