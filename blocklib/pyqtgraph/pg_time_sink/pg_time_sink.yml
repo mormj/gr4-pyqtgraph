@@ -7,10 +7,16 @@ grc:
         imports:
             from gnuradio import pyqtgraph as grpg
         make: |-
-            self.${id} = grpg.pg_time_sink_${T.fcn}(${title}, ${size}, ${nports}, impl=grpg.pg_time_sink_${T.fcn}.available_impl.numpy)
+            self.${id} = grpg.pg_time_sink_${T.fcn}(${title}, ${samp_rate}, ${size}, ${nports}, impl=grpg.pg_time_sink_${T.fcn}.available_impl.numpy)
             self.docks.append(Dock('${id}'))
-            self.area.addDock(self.docks[-1],'top')
-            self.docks[-1].addWidget(self.${id}.py_method("widget"))
+            % if dock_relative_to == "''":
+            self.area.addDock(self.docks[-1],${dock_position})
+            % else:
+            self.area.addDock(self.docks[-1],${dock_position},${dock_relative_to})
+            % endif
+            self._${id}_widget = self.${id}.py_method("widget")
+            self._${id}_widget.getPlotItem().setLabel(axis='left', text=${ylabel})
+            self.docks[-1].addWidget(self._${id}_widget)
 
 typekeys:
   - id: T
@@ -19,25 +25,48 @@ typekeys:
         - cf32
         - rf32
 
-# Example Parameters
 parameters:
 -   id: title
-    label: Title
+    label: Name
     dtype: string
     settable: true
     grc:
         default: ""
+-   id: samp_rate
+    label: Sampling Rate
+    dtype: rf64
+    grc:
+        default: samp_rate
 -   id: size
     label: Number of Points
     dtype: size
-    settable: false
     grc:
         default: 1024
 -   id: nports
-    label: Num Ports
+    label: Number of Inputs
     dtype: size
-    settable: false
     default: 1
+-   id: ylabel
+    label: Y Axis Label
+    dtype: string
+    cotr: false
+    default: Amplitude
+    grc:
+        hide: part 
+-   id: dock_position
+    label: Dock Location
+    dtype: string
+    cotr: false
+    default: 'top'
+    grc:
+        hide: part 
+-   id: dock_relative_to
+    label: Dock Relative To
+    dtype: string
+    cotr: false
+    default: "''"
+    grc:
+        hide: part 
 
 # Example Ports
 ports:

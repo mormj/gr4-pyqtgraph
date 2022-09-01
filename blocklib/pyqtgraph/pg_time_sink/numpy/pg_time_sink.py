@@ -12,10 +12,14 @@ class pg_time_sink_base:
         
         title = kwargs['title']
         nplot = kwargs['size']
+        samp_rate = kwargs['samp_rate']
+        self.xrange = 1000.0 * np.arange(nplot, dtype=np.float32) / samp_rate
 
         self.nports = kwargs.get('nports', 1)
         self.iscomplex = kwargs['iscomplex']
         self._widget = pg.PlotWidget(title=title, background='w')
+        self._plt = self._widget.getPlotItem()
+        self._plt.setLabel(axis='bottom', text='Time (ms)')
 
         self._nplot = nplot 
         self._nbuffers = 2*self.nports if self.iscomplex else self.nports
@@ -49,9 +53,9 @@ class pg_time_sink_base:
         for p in range(self.nports):
             idx = 0
             to_remove = []
-            self._curves[n*p].setData(y=self._buffers[n*p])
+            self._curves[n*p].setData(y=self._buffers[n*p], x=self.xrange)
             if self.iscomplex:
-                self._curves[n*p+1].setData(y=self._buffers[n*p+1])
+                self._curves[n*p+1].setData(y=self._buffers[n*p+1], x=self.xrange)
             for tag in self._tags[p]["buffer"]:
                 if tag.offset() >= self._n_buf_start and tag.offset() < self._n_buf_end:
                     if (idx >= len(self._tags[p]["points"])):
