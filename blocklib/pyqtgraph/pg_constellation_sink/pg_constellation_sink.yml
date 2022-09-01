@@ -1,0 +1,55 @@
+module: pyqtgraph
+block: pg_constellation_sink
+label: PyQT Graph Constellation Sink
+blocktype: sync_block
+grc:
+    templates:
+        imports:
+            from gnuradio import pyqtgraph as grpg
+        make: |-
+            self.${id} = grpg.pg_constellation_sink(${title}, ${size}, ${nports}, impl=grpg.pg_constellation_sink.available_impl.numpy)
+            self.docks.append(Dock('${id}'))
+            self.area.addDock(self.docks[-1],${dock_position})
+            self._${id}_widget = self.${id}.py_method("widget")
+            self.docks[-1].addWidget(self._${id}_widget)
+
+parameters:
+-   id: title
+    label: Name
+    dtype: string
+    settable: true
+    grc:
+        default: ""
+-   id: size
+    label: Number of Points
+    dtype: size
+    grc:
+        default: 1024
+-   id: nports
+    label: Number of Inputs
+    dtype: size
+    default: 1
+-   id: dock_position
+    label: Dock Location
+    dtype: string
+    cotr: false
+    default: 'top'
+    grc:
+        hide: part 
+
+
+# Example Ports
+ports:
+-   domain: stream
+    id: in
+    direction: input
+    type: cf32
+    multiplicity: parameters/nports
+
+
+implementations:
+-   id: numpy
+    lang: python
+    domain: cpu
+
+file_format: 1
