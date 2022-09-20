@@ -6,9 +6,7 @@ import numpy as np
 from pyqtgraph.dockarea import *
 
 from gnuradio import gr, analog, bench, streamops
-import pmtf
-
-from gnuradio.pyqtgraph.numpy import *
+from gnuradio import pyqtgraph as grpg
 
 app = pg.mkQApp('DockArea Example')
 pg.setConfigOptions(antialias=True)
@@ -27,18 +25,18 @@ src2 = analog.sig_source_f(samp_rate, analog.waveform_t.COS, 15, 1.0)
 throttle = streamops.throttle(samp_rate)
 inj = bench.time_tag_injector(gr.sizeof_float, interval, samp_rate)
 # snk = pg_plot_widget_f(100000, 'hello world')
-snk = pg_time_sink_f('hello world', 100000, nports=2)
+snk = grpg.pg_time_sink_f('hello world', samp_rate, 100000, nports=2)
 
 src3 = analog.sig_source_c(samp_rate, analog.waveform_t.COS, 0, 0.5)
 throttle2 = streamops.throttle(samp_rate)
-snk2 = pg_time_sink_c('hello world 2', 100000)
-snk3 = pg_waterfall_sink_c('hello world 3', 1024*100)
+snk2 = grpg.pg_time_sink_c('hello world 2', samp_rate, 100000)
+snk3 = grpg.pg_waterfall_sink_c('hello world 3', samp_rate, 0, 1024*100)
 fg.connect((src,throttle, inj, snk))
 fg.connect(src2,0, snk,1)
 fg.connect((src3,throttle2, snk2))
 fg.connect((src3, snk3))
 
-pgt = pg_table()
+# pgt = grpg.pg_table()
 
 d1 = Dock('a')
 d2 = Dock('b')
@@ -50,11 +48,11 @@ area.addDock(d1,'top')
 # area.addDock(d3,'right',d1)
 area.addDock(d4,'bottom',d1)
 # area.addDock(d3,'top')
-d1.addWidget(snk.widget())
-d2.addWidget(snk2.widget())
-d4.addWidget(snk3.widget())
+d1.addWidget(snk.py_method('widget'))
+d2.addWidget(snk2.py_method('widget'))
+d4.addWidget(snk3.py_method('widget'))
 # d2.addWidget(snk2.widget())
-d3.addWidget(pgt.widget())
+# d3.addWidget(pgt.widget())
 
 
 
