@@ -6,11 +6,9 @@ import pyqtgraph as pg
 import pmtf
 from pyqtgraph.Qt import QtGui
 
-class pg_table(grpg.pg_table):
-    def __init__(self, *args, **kwargs):
-        grpg.pg_table.__init__(self, *args, **kwargs, impl = grpg.pg_table.available_impl.pyshell)
-        self.set_pyblock_detail(gr.pyblock_detail(self))       
-           
+class pg_table():
+    def __init__(self, blk, **kwargs):
+        self._blk = blk           
         self._widget = pg.TableWidget()
         self.data = None
         self.data_changed = False
